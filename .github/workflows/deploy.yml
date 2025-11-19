@@ -8,17 +8,27 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout code and gh-pages
         uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+          path: gh-pages
 
-      - name: Create versioned deployment
+      - name: Checkout main code
+        uses: actions/checkout@v3
+        with:
+          path: main-code
+
+      - name: Copy version to gh-pages
         run: |
-          # Создаем версионную папку в КОРНЕ
+          cd gh-pages
           mkdir -p ${{ github.event.release.tag_name }}
-          cp -r *.html ru/ en/ ${{ github.event.release.tag_name }}/
+          cp -r ../main-code/*.html ../main-code/ru ../main-code/en ./${{ github.event.release.tag_name }}/
+          cp -r ../main-code/*.html ../main-code/ru ../main-code/en ./
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./gh-pages
+          keep_files: true
