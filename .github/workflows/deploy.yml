@@ -1,29 +1,23 @@
-# Деплой на GitHub Pages
-name: Deploy to GitHub Pages  
+name: Deploy to GitHub Pages
 
 on:
   release:
-    # Запускается при создании релиза
-    types: [published]  
+    types: [published]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-        # Получение кода из репозитория
-      - name: Checkout code  
+      - name: Checkout code
         uses: actions/checkout@v3
-        
-        # Создание папки с версиями
+
       - name: Create versioned folder
         run: |
           mkdir -p public/v${{ github.event.release.tag_name }}
           cp -r *.html ru/ en/ public/v${{ github.event.release.tag_name }}/
-        
-        # Публикация на GitHub Pages
-      - name: Deploy to GitHub Pages  
-        uses: peaceiris/actions-gh-pages@v4
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          keep_files: true
+          publish_dir: ./
